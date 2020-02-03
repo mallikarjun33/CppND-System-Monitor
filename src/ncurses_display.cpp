@@ -8,6 +8,9 @@
 #include "ncurses_display.h"
 #include "system.h"
 
+#include <iostream>
+using std::cout;
+
 using std::string;
 using std::to_string;
 
@@ -54,6 +57,9 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
 
 void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
                                       WINDOW* window, int n) {
+  //cout   << "Hello Arjun: " << processes.size() << std::endl;
+
+
   int row{0};
   int const pid_column{2};
   int const user_column{9};

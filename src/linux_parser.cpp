@@ -151,7 +151,6 @@ vector<string> LinuxParser::CpuUtilization() {
 
 
     return result;
-    //return {};
 }
 
 // TODO: Read and return the total number of processes
@@ -194,7 +193,17 @@ int LinuxParser::RunningProcesses() {
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Command(int pid[[maybe_unused]]) {
+    string line;
+    std::ifstream istream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+    if(istream.is_open())
+    {
+        std::getline(istream, line);
+        return line;
+    }
+
+    return string();
+}
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -202,11 +211,41 @@ string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Uid(int pid[[maybe_unused]]) {
+    //std::cout << "I.d is: " << pid << ",";
+
+    string line, key, value;
+    std::ifstream istream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+    //std::cout << "File is: " << kProcDirectory + std::to_string(pid) + kStatusFilename << ",";
+
+    if(istream.is_open())
+    {
+        while(std::getline(istream, line))
+        {
+            std::istringstream linestream(line);
+            while(linestream >> key >> value)
+            {
+                //std::cout << "Key:" << key << "Value:" << value << std::endl;
+                if(key == "Uid:")
+                {
+                    //std::cout << "I.d is: " << value << ",";
+
+                    return value;
+                }
+            }
+
+        }
+    }
+
+    return string();
+}
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid[[maybe_unused]]) {
+
+    return string();
+}
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
