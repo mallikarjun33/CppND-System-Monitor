@@ -205,19 +205,11 @@ string LinuxParser::Command(int pid[[maybe_unused]]) {
     return string();
 }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
-
-// TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) {
-    //std::cout << "I.d is: " << pid << ",";
-
-    string line, key, value;
+// TODO: Read and return the memory used by a process: DONE
+string LinuxParser::Ram(int pid) {
+    string line, key;
+    int value, resultinMB    ;
     std::ifstream istream(kProcDirectory + std::to_string(pid) + kStatusFilename);
-    //std::cout << "File is: " << kProcDirectory + std::to_string(pid) + kStatusFilename << ",";
-
     if(istream.is_open())
     {
         while(std::getline(istream, line))
@@ -225,11 +217,31 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) {
             std::istringstream linestream(line);
             while(linestream >> key >> value)
             {
-                //std::cout << "Key:" << key << "Value:" << value << std::endl;
+                if(key == "VmSize:")
+                {
+                    resultinMB = value/1024;
+                }
+            }
+
+        }
+    }
+    return std::to_string(resultinMB);
+}
+
+// TODO: Read and return the user ID associated with a process
+// REMOVE: [[maybe_unused]] once you define the function
+string LinuxParser::Uid(int pid[[maybe_unused]]) {
+    string line, key, value;
+    std::ifstream istream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+    if(istream.is_open())
+    {
+        while(std::getline(istream, line))
+        {
+            std::istringstream linestream(line);
+            while(linestream >> key >> value)
+            {
                 if(key == "Uid:")
                 {
-                    //std::cout << "I.d is: " << value << ",";
-
                     return value;
                 }
             }

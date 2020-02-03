@@ -28,6 +28,7 @@ vector<Process>& System::Processes() {
         Process newProcess;
         newProcess.setPid(i);
         processes_.push_back(newProcess);
+        std::reverse(processes_.begin(), processes_.end()); //temp to check output
     }
 
     return processes_;
@@ -37,9 +38,8 @@ vector<Process>& System::Processes() {
 std::string System::Kernel() { return LinuxParser::Kernel(); }
 
 // TODO: Return the system's memory utilization : DONE
-float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
+float System::MemoryUtilization() {    return LinuxParser::MemoryUtilization();}
 
-// TODO: Return the operating system name : DONE
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
 // TODO: Return the number of processes actively running on the system : DONE

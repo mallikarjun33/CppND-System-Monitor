@@ -57,8 +57,6 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
 
 void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
                                       WINDOW* window, int n) {
-  //cout   << "Hello Arjun: " << processes.size() << std::endl;
-
 
   int row{0};
   int const pid_column{2};
