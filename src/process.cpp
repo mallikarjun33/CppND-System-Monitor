@@ -20,7 +20,26 @@ int Process::Pid() { return pid_; }
 void Process::setPid(int id) {pid_=id;}
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+float Process::CpuUtilization() {
+    /*
+    string cpu;
+    int user, nice, system, idle, iowait, irq, softirq;
+    string line;
+    std::ifstream stream(LinuxParser::kProcDirectory + std::to_string(pid_) + LinuxParser::kStatFilename);
+    if (stream.is_open()) {
+        std::getline(stream, line);
+        std::istringstream linestream(line);
+        linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >> softirq;
+    }
+
+    float totalTime = user + nice + system + idle + iowait + irq + softirq;
+    float idleTimePercent = idle/totalTime;
+    float cpuUtilisationPercent = 1.0 - idleTimePercent;
+
+    return cpuUtilisationPercent;
+     */
+    return LinuxParser::CpuUsage(pid_);
+    }
 
 // TODO: Return the command that generated this process
 string Process::Command() { return LinuxParser::Command(pid_); }

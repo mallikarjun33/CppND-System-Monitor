@@ -6,6 +6,10 @@
 #include "linux_parser.h"
 #include <iostream>
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
 using std::stof;
 using std::string;
 using std::to_string;
@@ -242,7 +246,9 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) {
             {
                 if(key == "Uid:")
                 {
-                    return value;
+                    struct passwd *pws;
+                    pws = getpwuid(std::stoul(value));
+                        return pws->pw_name;
                 }
             }
 
@@ -278,4 +284,32 @@ long LinuxParser::UpTime(int pid[[maybe_unused]]) {
 
     uptime = std::stoi(startTime)/sysconf(_SC_CLK_TCK);
     return uptime;
+}
+
+//stat file definition: 1:pid 2:(exec-file-name) 3:state 4:ppid 5:pgrp 6:session 7 8 9 10 11 12 13 14:utime 15:stime 16:cutime 17:cstime 18 19 20 21 22:starttime 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43:guest_time 44 45 46 47 48 49 50 51 52
+float LinuxParser::CpuUsage(int pid) {
+
+    float cpuUasge = 0;
+    string processId, execFileName, state, ppid, pgrp, session, tty_nr, tpgid, flags, minflt, cminflt, majflt,
+            cmajflt, utime, stime, cutime, cstime, priority, nice, numThreads, itrealValue, startTime;
+    string line;
+    std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+    if (stream.is_open()) {
+        std::getline(stream, line);
+        std::istringstream linestream(line);
+        linestream >> processId>> execFileName>> state >> ppid >> pgrp >> session >> tty_nr >> tpgid >> flags
+                   >> minflt >> cminflt >> majflt >> cmajflt >> utime >> stime >> cutime >> cstime >> priority >> nice >> numThreads >> itrealValue >> startTime;
+    }
+
+    //calculation
+    float totaltime = std::stof(utime) + std::stof(stime) +  std::stof(cutime) + std::stof(cstime);
+
+    //time since process started
+    float seconds = LinuxParser::UpTime() - ( std::stof(startTime) / sysconf(_SC_CLK_TCK) );
+
+    //cpu usage
+    cpuUasge =  ((totaltime /  sysconf(_SC_CLK_TCK))/seconds)*100 ;
+
+    return cpuUasge;
+
 }
