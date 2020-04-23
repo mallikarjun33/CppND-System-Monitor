@@ -282,7 +282,7 @@ long LinuxParser::UpTime(int pid[[maybe_unused]]) {
         >> minflt >> cminflt >> majflt >> cmajflt >> utime >> stime >> cutime >> cstime >> priority >> nice >> numThreads >> itrealValue >> startTime;
     }
 
-    uptime = std::stoi(startTime)/sysconf(_SC_CLK_TCK);
+    uptime = UpTime() - std::stoi(startTime)/sysconf(_SC_CLK_TCK);
     return uptime;
 }
 
@@ -305,10 +305,10 @@ float LinuxParser::CpuUsage(int pid) {
     float totaltime = std::stof(utime) + std::stof(stime) +  std::stof(cutime) + std::stof(cstime);
 
     //time since process started
-    float seconds = LinuxParser::UpTime() - ( std::stof(startTime) / sysconf(_SC_CLK_TCK) );
+    const float seconds = UpTime(pid);
 
     //cpu usage
-    cpuUasge =  ((totaltime /  sysconf(_SC_CLK_TCK))/seconds)*100 ;
+    cpuUasge =  ((totaltime /  sysconf(_SC_CLK_TCK))/seconds) ;
 
     return cpuUasge;
 
