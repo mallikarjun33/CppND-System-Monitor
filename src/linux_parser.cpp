@@ -223,7 +223,7 @@ string LinuxParser::Ram(int pid) {
 }
 
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) {
+string LinuxParser::Uid(int pid) {
     string line, key, value;
     std::ifstream istream(kProcDirectory + std::to_string(pid) + kStatusFilename);
     if(istream.is_open())
