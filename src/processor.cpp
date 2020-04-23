@@ -18,9 +18,9 @@ float Processor::Utilization() {
         linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >> softirq;
     }
 
-    float totalTime = user + nice + system + idle + iowait + irq + softirq;
-    float idleTimePercent = idle/totalTime;
-    float cpuUtilisationPercent = 1.0 - idleTimePercent; //*100
+    const float totalTime = user + nice + system + idle + iowait + irq + softirq;
+    const float idleTimePercent = idle/totalTime;
+    const float cpuUtilisationPercent = 1.0 - idleTimePercent; //*100
 
     return cpuUtilisationPercent;
 }

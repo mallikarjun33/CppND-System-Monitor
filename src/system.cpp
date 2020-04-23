@@ -19,7 +19,7 @@ using std::vector;
 Processor& System::Cpu() { return cpu_; }
 
 vector<Process>& System::Processes() {
-    processes_.erase(processes_.begin(), processes_.end());
+    processes_.clear();
     vector<int> processIdList = LinuxParser::Pids();
     for(int i:processIdList)
     {
@@ -28,6 +28,12 @@ vector<Process>& System::Processes() {
         processes_.push_back(newProcess);
         std::reverse(processes_.begin(), processes_.end()); //temp to check output
     }
+
+    //sort processes before returning
+    std::sort(processes_.begin(),processes_.end(),[](Process a, Process b){
+      return a.CpuUtilization() > b.CpuUtilization();
+    }
+ );
 
     return processes_;
 }
